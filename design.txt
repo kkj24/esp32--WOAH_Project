@@ -1,0 +1,20 @@
+- Baca Sensor
+    |
+    pH Air
+    Turbidity
+    TDS
+
+- TFT Display
+    |
+    Touchscreen
+    RGB Display
+
+- LVGL Dashboard
+    |
+    UI Processing
+    Interactive Dashboard
+
+- Kirim Data
+    |
+    Pembacaan Sensor
+    Video
