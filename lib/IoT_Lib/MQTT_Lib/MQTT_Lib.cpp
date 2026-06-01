@@ -28,12 +28,13 @@ template <typename value>
 void myMQTT::sendData(String topic, String data_name, value data_value) {
     myWiFi_Lib wifi_mqtt_lib;                       // WiFi Lib Obj
     bool wifistatus = wifi_mqtt_lib.statusWiFi();   // WiFi Status
+    bool mqtt_status = mqttStatus();
     JsonDocument my_doc;                            // JSON Object
     char data_buff[512];                            // Data Buffer
     my_doc[data_name] = data_value;                 // Convert Data to JSON
     serializeJson(my_doc, data_buff);               // Serialize JSON data to Buffer
 
-    if(mqttStatus && wifistatus)
+    if(mqtt_status && wifistatus)
         my_mqtt.publish(topic.c_str(), data_buff);      // Send Data Buffer to MQTT
 }
 
