@@ -26,18 +26,25 @@ void myMQTT::begin() {
 
 template <typename value>
 void myMQTT::sendData(String topic, String data_name, value data_value) {
-    JsonDocument my_doc;                       // JSON Object
-    char data_buff[512];                       // Data Buffer
-    my_doc[data_name] = data_value;            // Convert Data to JSON
-    serializeJson(my_doc, data_buff);          // Serialize JSON data to Buffer
-    my_mqtt.publish(topic.c_str(), data_buff); // Send Data Buffer to MQTT
+    myWiFi_Lib wifi_mqtt_lib;                       // WiFi Lib Obj
+    bool wifistatus = wifi_mqtt_lib.statusWiFi();   // WiFi Status
+    JsonDocument my_doc;                            // JSON Object
+    char data_buff[512];                            // Data Buffer
+    my_doc[data_name] = data_value;                 // Convert Data to JSON
+    serializeJson(my_doc, data_buff);               // Serialize JSON data to Buffer
+
+    if(mqttStatus && wifistatus)
+        my_mqtt.publish(topic.c_str(), data_buff);      // Send Data Buffer to MQTT
 }
 
 void myMQTT::reconnect() {
-    static bool last_status;
+    myWiFi_Lib wifi_lib_mqtt;   // WiFi Lib Obj
+
+    bool last_status;
+    bool wifi_status = wifi_lib_mqtt.statusWiFi();
 
     // Connecting
-    while(!mqttStatus()) {
+    while(!mqttStatus() && wifi_status) {
         my_mqtt.connect(getID_unique().c_str());
         vTaskDelay(pdMS_TO_TICKS(5000));
     }
@@ -51,5 +58,14 @@ void myMQTT::reconnect() {
 
 bool myMQTT::mqttStatus() {
     bool status = (my_mqtt.connected() ? true : false);
+
+    bool lastStatus;
+    if(!lastStatus && status)
+        Serial.println(F("MQTT Connected!"));
+    else
+        Serial.println(F("MQTT Disconnected!"));
+
+    lastStatus = status;
+
     return status;
 }

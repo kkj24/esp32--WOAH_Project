@@ -30,10 +30,24 @@ void myWiFi_Lib::init_web() {
 
 bool myWiFi_Lib::statusWiFi() {
     bool status;
-    if(WiFi.status() == WL_CONNECTED)
+    if(WiFi.status() == WL_CONNECTED) {
         status = true;
-    else
+
+        bool lastStatus;
+        if(!lastStatus && status)
+            Serial.println(F("WiFi Connnected!"));
+
+        lastStatus = status;
+    }
+    else {
         status = false;
+
+        bool lastStatus;
+        if(lastStatus && !status)
+            Serial.println(F("WiFi Disconnected!"));
+
+        lastStatus = status;
+    }
 
     return status;
 }
