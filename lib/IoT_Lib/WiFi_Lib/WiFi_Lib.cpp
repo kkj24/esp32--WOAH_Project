@@ -31,33 +31,38 @@ void myWiFi_Lib::init_web() {
 
     server.on("/wifi", HTTP_POST, [this]() {
         JsonDocument doc;
-        DeserializationError error = deserializeJson(doc, server.arg("plain"));
+        DeserializationError error = deserializeJson(doc, server.arg("plain")); // Argument
 
         if(error) {
-            server.send(400, "text/plain", "Invalid JSON");
+            server.send(400, "text/plain", "Invalid JSON"); // Send error info "Invalid JSON"
             return;
         }
 
-        String ssid = doc["ssid"].as<String>();
-        String password = doc["password"].as<String>();
+        String ssid = doc["ssid"].as<String>();         // SSID as JSON
+        String password = doc["password"].as<String>(); // PASS as JSON 
 
+        // Connect
         WiFi.begin(ssid.c_str(), password.c_str());
         wifiStatus = "CONNECTING";
 
+        // TimeOut Connect
         unsigned long startTime = millis();
         while(WiFi.status() != WL_CONNECTED && millis() - startTime < 10000) {
             vTaskDelay(pdMS_TO_TICKS(500));
         }
 
+        // While Connected
         if(WiFi.status() == WL_CONNECTED) {
             wifiStatus = "CONNECTED";
             server.send(200, "text/plain", "WiFi Connected!");
+        // While Failed to Connect
         } else {
             wifiStatus = "FAILED";
             server.send(200, "text/plain", "WiFi Failed to Connect!");
         }
     });
 
+    // Send WiFi Status
     server.on("/status", HTTP_GET, [this]() {
         server.send(200, "text/plain", wifiStatus);
     });
