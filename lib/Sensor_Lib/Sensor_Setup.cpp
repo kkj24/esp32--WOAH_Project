@@ -3,6 +3,8 @@
 Adafruit_ADS1115 ads1;
 Adafruit_ADS1115 ads2;
 
+bool sample_data = false;
+
 void setup_ads::setup_all_ads() {
     Wire.begin();
 

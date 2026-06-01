@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOAH WiFi Configure</title>
+</head>
+<body>
+
+  <style>
+
+    body {
+      background:linear-gradient(to left, rgb(231, 15, 231), rgb(21, 214, 240), rgb(236, 202, 9));
+    }
+
+    .Title {
+      text-align: center;
+      font-family:sans-serif;
+      text-shadow: 0 0 20px rgb(27, 6, 23); 
+    }
+
+    #ssid_input {
+      width: 150px;
+      height:20px;
+      border-radius: 5px;
+      border: 0px;
+      position: relative;
+      left: 208px;
+      background-color: rgb(196, 195, 195);
+      box-shadow: 0 0 15px rgb(129, 127, 129);
+    }
+    
+    #pass_input {
+      width: 150px;
+      height:20px;
+      border-radius: 5px;
+      border: 0px;
+      position: relative;
+      left: 50px;
+      top: 30px;
+      background-color: rgb(196, 195, 195);
+      box-shadow: 0 0 15px rgb(161, 161, 161);
+    }
+
+    #login_button {
+      border-radius: 5px;
+      position: relative;
+      top: 50px;
+      left: 265px;
+      border: 0px;
+      color: rgb(10, 8, 10);
+      text-shadow: 0 0 10px rgb(209, 218, 209);
+      background: rgb(2, 247, 84);
+      box-shadow: 2px 2px 15px rgb(10, 233, 21);
+    }
+
+    .Input_Login {
+      position: relative;
+      top: 50px;
+    }
+
+  </style>
+
+  <header>
+    <div class="Title">
+      <h1>WOAH Dashboard Setup</h1>
+    </div>
+  </header>
+
+  <main>
+    <div class="Input_Login">
+      <input id="ssid_input" type="text" placeholder="SSID">
+      <input id="pass_input" type="password" placeholder="PASS">
+
+      <div class="button">
+        <button id="login_button">Login</button>
+      </div>
+    </div>
+  </main>
+
+  
+</body>
+</html>

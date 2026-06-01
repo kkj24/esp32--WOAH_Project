@@ -7,9 +7,6 @@ class pH_Sensor {
     public:
         pH_Sensor();
 
-        // Give Random Data for Sample
-        bool sample_data = false;
-
         // Manually Calibrate
         void calibrate(int16_t min, int16_t max);
 

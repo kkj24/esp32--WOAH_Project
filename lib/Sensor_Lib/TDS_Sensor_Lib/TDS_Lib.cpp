@@ -1,136 +1,77 @@
 #include "TDS_Lib.h"
 
-TDS::TDS() {
-    // No Once Func in Here
-}
+TDS_Sensor::TDS_Sensor() {
+    // No Once func at here
+};
 
-void TDS::calibrate(
+void TDS_Sensor::calibrate(
     int16_t min1, int16_t max1,
     int16_t min2, int16_t max2,
     int16_t min3, int16_t max3
 ) {
-    // Minimum TDS Value
+    // Min TDS Config Value
     _min_TDS1 = min1;
     _min_TDS2 = min2;
     _min_TDS3 = min3;
 
-    // Maximum TDS Value
+    // Max TDS Config Value
     _max_TDS1 = max1;
     _max_TDS2 = max2;
     _max_TDS3 = max3;
 }
 
-void TDS::auto_calibrate(bool state_auto) {
+void TDS_Sensor::auto_calibrate(bool state_auto) {
     if(state_auto) {
-        // While Sample Data = false
-        if(!sample_data) {
-            int16_t value1 = ads2.readADC_SingleEnded(ADS_CH1),
-                    value2 = ads2.readADC_SingleEnded(ADS_CH2),
-                    value3 = ads2.readADC_SingleEnded(ADS_CH3);
-    
-            // Maximum Value
-            if(value1 > _max_TDS1) {
-                _max_TDS1 = value1;
-            }
-    
-            if(value2 > _max_TDS2) {
-                _max_TDS2 = value2;
-            }
-    
-            if(value3 > _max_TDS3) {
-                _max_TDS3 = value3;
-            }
-    
-            // Minimum Value
-            if(value1 < _min_TDS1) {
-                _min_TDS1 = value1;
-            }
-    
-            if(value2 < _min_TDS2) {
-                _min_TDS2 = value2;
-            }
-    
-            if(value3 < _min_TDS3) {
-                _min_TDS3 = value3;
-            }
-        // While Sample Data = true
-        } else {
-            int16_t value1 = ads2.readADC_SingleEnded(ADS_CH1),
-                    value2 = ads2.readADC_SingleEnded(ADS_CH2),
-                    value3 = ads2.readADC_SingleEnded(ADS_CH3);
-    
-            // Maximum Value
-            if(value1 > _max_TDS1) {
-                _max_TDS1 = value1;
-            }
-    
-            if(value2 > _max_TDS2) {
-                _max_TDS2 = value2;
-            }
-    
-            if(value3 > _max_TDS3) {
-                _max_TDS3 = value3;
-            }
-    
-            // Minimum Value
-            if(value1 < _min_TDS1) {
-                _min_TDS1 = value1;
-            }
-    
-            if(value2 < _min_TDS2) {
-                _min_TDS2 = value2;
-            }
-    
-            if(value3 < _min_TDS3) { 
-                _min_TDS3 = value3;
-            }
-        }
+        // Read TDS1 - TDS3
+        int16_t raw_TDS1 = (sample_data ? random(-4096, 4096) : raw_TDS(TDS1)),
+                raw_TDS2 = (sample_data ? random(-4096, 4096) : raw_TDS(TDS2)),
+                raw_TDS3 = (sample_data ? random(-4096, 4096) : raw_TDS(TDS3));
+
+        // Configure TDS1
+        if(raw_TDS1 < _min_TDS1)        // Min
+            _min_TDS1 = raw_TDS1;
+        else if(raw_TDS1 > _max_TDS1)   // Max
+            _max_TDS1 = raw_TDS1;
+            
+        // Configure TDS2 
+        if(raw_TDS2 < _min_TDS2)        // Min
+            _min_TDS2 = raw_TDS2;
+        else if(raw_TDS2 > _max_TDS2)   // Max
+            _max_TDS2 = raw_TDS2;
+                
+        // Configure TDS3
+        if(raw_TDS3 < _min_TDS3)        // Min
+            _min_TDS3 = raw_TDS3;
+        else if(raw_TDS3 > _max_TDS3)   // Max
+            _max_TDS3 = raw_TDS3;
     }
 }
 
-int16_t TDS::raw_TDS(uint8_t ch) {
-    // While Data Sample = false
-    if(!sample_data) {
-        int16_t raw_data = ads2.readADC_SingleEnded(ch);
-        return raw_data;
-    // While Data Sample = true
-    } else {
-        int16_t raw_data = random(-4096, 4096);
-        return raw_data;
-    }
+int16_t TDS_Sensor::raw_TDS(uint8_t ch) {
+    int16_t TDS_raw = (sample_data ? random(-4096, 4096) : ads2.readADC_SingleEnded(ch));
+    return TDS_raw;
 }
 
-uint8_t TDS::read_TDS(uint8_t ch) {
+uint8_t TDS_Sensor::read_TDS(uint8_t ch) {
+    int16_t min, max;
+
     switch(ch) {
-        
-        int16_t min, 
-                max;
-
-        // CH_0
-        case ADS_CH1:
+        case TDS1:
             min = _min_TDS1;
             max = _max_TDS1;
         break;
 
-        // CH_1
-        case ADS_CH2:
+        case TDS2:
             min = _min_TDS2;
             max = _max_TDS2;
         break;
-        // CH_2
-        case ADS_CH3:
+
+        case TDS3:
             min = _min_TDS3;
             max = _max_TDS3;
         break;
-
-        // While Sample Data = false
-        if(!sample_data) {
-            uint8_t TDS_data = constrain(map(ads2.readADC_SingleEnded(ch), min, max, 0, 100), 0, 100);
-            return TDS_data;
-        // While Sample Data = true
-        } else {
-            uint8_t TDS_data = constrain(map(random(-4096, 4096), min, max, 0, 100), 0, 100);
-            return TDS_data;
-        }
     }
+
+    uint8_t TDS_data = constrain(map((sample_data ? random(-4096, 4096) :ads2.readADC_SingleEnded(ch)), min, max, 0, 100), 0, 100);
+    return TDS_data;
 }

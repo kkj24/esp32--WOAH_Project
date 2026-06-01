@@ -3,12 +3,13 @@
 
 #include "Sensor_Setup.h"
 
-class Turbidity {
-    public:
-        Turbidity();
+#define TURBIDITY1 0
+#define TURBIDITY2 1
+#define TURBIDITY3 2
 
-        // Give Random Data for Sample
-        bool sample_data = false;
+class Turbidity_Sensor {
+    public:
+        Turbidity_Sensor();
 
         // Manually Calibrate
         void calibrate(
@@ -25,7 +26,7 @@ class Turbidity {
         uint8_t getTurbidity_read(uint8_t ch);
 
         // get turbidity read raw with channel reference
-        int16_t readTurbidity(uint8_t ch);
+        int16_t readTurbidity_raw(uint8_t ch);
 
     private:
     // minimum raw data

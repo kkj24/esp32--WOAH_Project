@@ -3,12 +3,13 @@
 
 #include "Sensor_Setup.h"
 
-class TDS {
-    public:
-        TDS();
+#define TDS1 0
+#define TDS2 1
+#define TDS3 2
 
-        // Give Random Data for Sample
-        bool sample_data = false;
+class TDS_Sensor {
+    public:
+        TDS_Sensor();
 
         // Auto Calibrate (Auto range), must be looping
         void auto_calibrate(bool state_auto);

@@ -19,9 +19,13 @@ extern Adafruit_ADS1115 ads2;
 #define ADS1_ADDRESS 0x48
 #define ADS2_ADDRESS 0x49
 
+extern bool sample_data;
+
 class setup_ads {
     public:
         void setup_all_ads();
+
+        // Give Random Data for Sample
 
     private:
 
