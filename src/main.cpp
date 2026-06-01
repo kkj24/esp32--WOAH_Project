@@ -6,16 +6,12 @@
 #include "pH_Sensor_Lib/pH_Lib.h"
 
 #include "WiFi_Lib.h"
-
-myWiFi wifi;
+#include "MQTT_Lib.h"
 
 void setup() {
-    Serial.begin(115200);
-    delay(200);
 
-    wifi.begin("", "");
 }
 
 void loop() {
-    wifi.handlePortal();
+
 }

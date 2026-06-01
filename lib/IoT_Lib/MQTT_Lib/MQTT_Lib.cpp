@@ -26,11 +26,11 @@ void myMQTT::begin() {
 
 template <typename value>
 void myMQTT::sendData(String topic, String data_name, value data_value) {
-    JsonDocument my_doc;                // JSON Object
-    char data_buff[512];                // Data Buffer
-    my_doc[data_name] = data_value;     // Convert Data to JSON
-    serializeJson(my_doc, data_buff);   // Serialize JSON data to Buffer
-    my_mqtt.publish(topic, data_buff);  // Send Data Buffer to MQTT
+    JsonDocument my_doc;                       // JSON Object
+    char data_buff[512];                       // Data Buffer
+    my_doc[data_name] = data_value;            // Convert Data to JSON
+    serializeJson(my_doc, data_buff);          // Serialize JSON data to Buffer
+    my_mqtt.publish(topic.c_str(), data_buff); // Send Data Buffer to MQTT
 }
 
 void myMQTT::reconnect() {

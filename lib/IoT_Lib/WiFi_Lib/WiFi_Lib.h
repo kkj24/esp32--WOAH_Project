@@ -7,14 +7,31 @@
 #include <WebServer.h>
 #include <esp_wifi.h>
 
-class myWiFi {  
-    public:
-        myWiFi();
+// Soft AP SSID
+#ifndef WIFIAP_SSID
+#define WIFIAP_SSID "WOAH--ESP32"
+#endif
 
-        void begin(String PASS, String SSID);   // Begin WiFi
+// Soft AP Password
+#ifndef WIFIAP_PASS
+#define WIFIAP_PASS "WOAH--Project-1021"
+#endif
+
+#ifndef WIFI_HOSTNAME
+#define WIFI_HOSTNAME "WOAH_ESP32"
+#endif
+
+class myWiFi_Lib {  
+    public:
+        myWiFi_Lib();
+
+        void begin(String PASS = "Test12345", String SSID = "ESP32--WOAH");   // Begin WiFi
         void init_web();                        // Initialize Web
-        void AutoReconnect();                   // Auto Reconnecting WiFi Func
+        void AutoReconnect(bool enable);        // Auto Reconnecting WiFi Func
         void run();                             // Looping Func
+
+        bool statusWiFi();                      // Connection Status WiFi           
+        int8_t WiFi_RSSI();                     // RSSI WiFi (Signal Strength)
 
     private:
 
