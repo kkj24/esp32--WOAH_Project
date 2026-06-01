@@ -1,8 +1,8 @@
 #include "WiFi_Lib.h"
 #include "Web_Page_Login/Web_Page.h"
+#include <ArduinoJson.h>
 
-myWiFi_Lib::myWiFi_Lib() {
-    // No Func in Here
+myWiFi_Lib::myWiFi_Lib() : server(80) {
 }
 
 void myWiFi_Lib::begin(String PASS, String SSID) {
@@ -25,7 +25,44 @@ void myWiFi_Lib::AutoReconnect(bool enable) {
 }
 
 void myWiFi_Lib::init_web() {
-    // Web Page Func
+    server.on("/", [this]() {
+        server.send(200, "text/html", HTML_Page);
+    });
+
+    server.on("/wifi", HTTP_POST, [this]() {
+        JsonDocument doc;
+        DeserializationError error = deserializeJson(doc, server.arg("plain"));
+
+        if(error) {
+            server.send(400, "text/plain", "Invalid JSON");
+            return;
+        }
+
+        String ssid = doc["ssid"].as<String>();
+        String password = doc["password"].as<String>();
+
+        WiFi.begin(ssid.c_str(), password.c_str());
+        wifiStatus = "CONNECTING";
+
+        unsigned long startTime = millis();
+        while(WiFi.status() != WL_CONNECTED && millis() - startTime < 10000) {
+            vTaskDelay(pdMS_TO_TICKS(500));
+        }
+
+        if(WiFi.status() == WL_CONNECTED) {
+            wifiStatus = "CONNECTED";
+            server.send(200, "text/plain", "WiFi Connected!");
+        } else {
+            wifiStatus = "FAILED";
+            server.send(200, "text/plain", "WiFi Failed to Connect!");
+        }
+    });
+
+    server.on("/status", HTTP_GET, [this]() {
+        server.send(200, "text/plain", wifiStatus);
+    });
+
+    server.begin();
 }
 
 bool myWiFi_Lib::statusWiFi() {
@@ -55,4 +92,8 @@ bool myWiFi_Lib::statusWiFi() {
 int8_t myWiFi_Lib::WiFi_RSSI() {
     int8_t RSSI = WiFi.RSSI();
     return RSSI;
+}
+
+void myWiFi_Lib::run() {
+    server.handleClient();
 }

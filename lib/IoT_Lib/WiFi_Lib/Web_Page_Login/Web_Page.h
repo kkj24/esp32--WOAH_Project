@@ -5,9 +5,321 @@
 
 String HTML_Page PROGMEM = 
 R"HTML(
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-    // HTML Func in here
-    
+<title>Login WOAH</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        #7a8de6,
+        #812dd4
+    );
+}
+
+.card{
+    width:90%;
+    max-width:420px;
+
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(15px);
+
+    border-radius:20px;
+
+    padding:30px;
+
+    box-shadow:
+    0 8px 32px rgba(0,0,0,0.25);
+
+    color:white;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    text-align:center;
+    opacity:0.8;
+    margin-bottom:25px;
+}
+
+label{
+    display:block;
+    margin-bottom:6px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+
+    border:none;
+    border-radius:10px;
+
+    outline:none;
+}
+
+.password-container{
+    position:relative;
+}
+
+.eye-btn{
+    position:absolute;
+
+    right:10px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    border:none;
+    background:none;
+
+    cursor:pointer;
+
+    font-size:18px;
+}
+
+button.connect{
+    width:100%;
+    margin-top:20px;
+
+    padding:14px;
+
+    border:none;
+    border-radius:12px;
+
+    font-size:16px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    background:white;
+    color:#764ba2;
+}
+
+button.connect:hover{
+    opacity:0.9;
+}
+
+.status-box{
+    margin-top:20px;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    text-align:center;
+}
+
+.waiting{
+    background:#ffc107;
+    color:black;
+}
+
+.success{
+    background:#28a745;
+}
+
+.error{
+    background:#dc3545;
+}
+
+.info{
+    background:#17a2b8;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>WOAH</h1>
+    <p class="subtitle">
+        WiFi Configuration Portal
+    </p>
+
+    <label>SSID</label>
+
+    <input
+        id="ssid"
+        type="text"
+        placeholder="Masukkan SSID">
+
+    <br><br>
+
+    <label>Password</label>
+
+    <div class="password-container">
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Masukkan Password">
+
+        <button
+            class="eye-btn"
+            onclick="togglePassword()">
+
+            Show
+        </button>
+
+    </div>
+
+    <button
+        class="connect"
+        onclick="saveWifi()">
+
+        Connect WiFi
+
+    </button>
+
+    <div
+        id="status"
+        class="status-box info">
+
+        Wait for Input
+
+    </div>
+
+</div>
+
+<script>
+
+function togglePassword()
+{
+    const pass =
+        document.getElementById("password");
+
+    pass.type =
+        pass.type === "password"
+        ? "text"
+        : "password";
+}
+
+async function saveWifi()
+{
+    const ssid =
+        document.getElementById("ssid").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const status =
+        document.getElementById("status");
+
+    status.className =
+        "status-box waiting";
+
+    status.innerHTML =
+        "Connecting...";
+
+    try
+    {
+        const response =
+            await fetch(
+                "/wifi",
+                {
+                    method:"POST",
+                    headers:
+                    {
+                        "Content-Type":
+                        "application/json"
+                    },
+                    body:
+                    JSON.stringify(
+                    {
+                        ssid:ssid,
+                        password:password
+                    })
+                }
+            );
+
+        const text =
+            await response.text();
+
+        status.innerHTML =
+            text;
+
+        checkStatus();
+    }
+    catch(e)
+    {
+        status.className =
+            "status-box error";
+
+        status.innerHTML =
+            "ESP not Responding!";
+    }
+}
+
+async function checkStatus()
+{
+    const status =
+        document.getElementById("status");
+
+    let timer =
+    setInterval(
+    async ()=>{
+        try
+        {
+            const response =
+                await fetch("/status");
+
+            const result =
+                await response.text();
+
+            if(result === "CONNECTED")
+            {
+                status.className =
+                    "status-box success";
+
+                status.innerHTML =
+                    "WiFi Connected!";
+
+                clearInterval(timer);
+            }
+            else if(result === "FAILED")
+            {
+                status.className =
+                    "status-box error";
+
+                status.innerHTML =
+                    "WiFi not Connected!";
+
+                clearInterval(timer);
+            }
+        }
+        catch(e){}
+    },
+    2000);
+}
+
+</script>
+
+</body>
+</html>
 )HTML";
 
 #endif

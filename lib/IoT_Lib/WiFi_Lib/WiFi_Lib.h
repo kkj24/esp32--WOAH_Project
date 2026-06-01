@@ -34,7 +34,8 @@ class myWiFi_Lib {
         int8_t WiFi_RSSI();                     // RSSI WiFi (Signal Strength)
 
     private:
-
+        WebServer server;
+        String wifiStatus;
 };
 
 #endif
