@@ -2,7 +2,7 @@
 #define TFT_DISPLAY_LIBARIES_H
 
 #include <Arduino.h>
-#include <LovyanGFX.h>
+#include <LovyanGFX.hpp>
 #include <lvgl.h>
 
 #define TFT_SCREEN_WIDTH  320

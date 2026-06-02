@@ -38,6 +38,10 @@ void myMQTT::sendData(String topic, String data_name, value data_value) {
         my_mqtt.publish(topic.c_str(), data_buff);      // Send Data Buffer to MQTT
 }
 
+void myMQTT::run() {
+    my_mqtt.loop();
+}
+
 void myMQTT::reconnect() {
     myWiFi_Lib wifi_lib_mqtt;   // WiFi Lib Obj
 

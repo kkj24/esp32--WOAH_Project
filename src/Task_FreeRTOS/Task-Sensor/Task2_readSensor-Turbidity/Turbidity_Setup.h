@@ -3,6 +3,19 @@
 
 #include "Turbidity_Lib.h"
 
+
+typedef struct {
+    uint8_t data1;
+    uint8_t data2;
+    uint8_t data3;
+
+    int16_t data_raw1;
+    int16_t data_raw2;
+    int16_t data_raw3;
+} turbidity_struct_t;
+
+extern turbidity_struct_t turbidity_data;
+
 extern Turbidity_Sensor turbidity;
 extern TaskHandle_t turbidity_task_handle;
 extern QueueHandle_t turbidity_queue;

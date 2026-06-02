@@ -2,7 +2,7 @@
 #define MQTT_LIBRARIES_H
 
 #include <Arduino.h>
-#include <ArduinoJSON.h>
+#include <ArduinoJson.h>
 #include <PubSubClient.h>
 
 #include "WiFi_Lib.h"
@@ -43,7 +43,8 @@ class myMQTT {
     
         template <typename value>
         void sendData(String topic, String data_name, value data_value);     // Send Data JSON to MQTT
-    
+        void run();                                                          // Looping
+
         void reconnect();    // Reconnect MQTT
     
         bool mqttStatus();   // MQTT Connection Status

@@ -1,10 +1,5 @@
 #include "pH_Setup.h"
 
-typedef struct {
-    uint8_t pH_data;
-    int16_t pH_temp;
-    int16_t pH_raw;
-} pH_struct_t;
 
 pH_struct_t data_ph;
 pH_Sensor ph;
